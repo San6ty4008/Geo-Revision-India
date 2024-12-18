@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Locations Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #map { 
+      height: 600px; 
+      width: 100%; 
+    }
+    .message {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #333;
+    }
+    .feedback {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Study Locations</h1>
+  <p>Click on the map to identify the locations of rivers and mountains.</p>
+
+  <div id="map"></div>
+  <div id="result" class="message"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    // Create map centered over India
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    // Add tile layer (you can choose different ones)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Locations (example coordinates for rivers and mountains)
+    const locations = [
+      { name: "Ganges River", coords: [25.5941, 85.1376], correct: true }, // Ganges
+      { name: "Brahmaputra River", coords: [26.2006, 91.6902], correct: true },
+      { name: "Indus River", coords: [30.0588, 71.5249], correct: true },
+      { name: "Western Ghats", coords: [14.5478, 74.2321], correct: false },
+      { name: "Eastern Ghats", coords: [19.0700, 85.2150], correct: false },
+      { name: "Deccan Plateau", coords: [16.4895, 76.1319], correct: false },
+      { name: "Thar Desert", coords: [27.2380, 70.8580], correct: false },
+      { name: "Himalayas", coords: [35.5770, 77.2000], correct: false }
+    ];
+
+    // Add markers for each location
+    locations.forEach(location => {
+      L.marker(location.coords)
+        .addTo(map)
+        .bindPopup(location.name)
+        .on('click', function() {
+          checkAnswer(location);
+        });
+    });
+
+    // Check if the user clicked the correct location
+    function checkAnswer(location) {
+      const resultDiv = document.getElementById("result");
+      let feedbackMessage;
+      if (location.correct) {
+        feedbackMessage = `${location.name} is correct! 🎉`;
+      } else {
+        feedbackMessage = `${location.name} is incorrect, try again. ❌`;
+      }
+
+      resultDiv.innerHTML = `<div class="feedback">${feedbackMessage}</div>`;
+    }
+  </script>
+
+</body>
+</html>
